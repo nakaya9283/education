@@ -1,0 +1,5 @@
+# HTMLファイルと.gitignore自体以外はすべて非公開（コミット対象外）とする
+*
+
+!*.html
+!.gitignore
