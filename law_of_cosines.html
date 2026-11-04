@@ -75,10 +75,9 @@ ol b{color:var(--tx);font-weight:500}
 <ol>
 <li>頂点<b>C</b>を原点、頂点<b>B</b>をx軸上の点 (a, 0) に置く座標平面を考える。</li>
 <li>頂点<b>A</b>から辺CB（x軸）に下ろした垂線の足を<b>H</b>とすると、CH = b・cos C、AH = b・sin C と表せる（∠Cが鈍角のときCHは負の値になり、Hは線分CBの外側に出る）。</li>
-<li>直角三角形AHCにピタゴラスの定理を使うと、AH² + CH² = b²（これは cos²C + sin²C = 1 そのもの）。</li>
-<li>直角三角形AHBにピタゴラスの定理を使うと、AH² + BH² = c²。ここで BH = a − CH（Hがどちらの位置にあっても、符号付きの座標差としてこの式は常に成り立つ）。</li>
-<li>c² = AH² + (a − CH)² = AH² + CH² − 2a・CH + a² = <b>b² − 2a(b・cos C) + a²</b>（3の結果を代入）。</li>
-<li>整理すると <b>c² = a² + b² − 2ab・cos C</b>。∠Cが鈍角でcos Cが負になっても、符号がそのまま計算に反映されるので式はそのまま成り立つ。</li>
+<li>直角三角形AHBにピタゴラスの定理を使うと、AH² + BH² = c²。ここで BH = a − CH = a − b・cos C（Hがどちらの位置にあっても、符号付きの座標差としてこの式は常に成り立つ）。</li>
+<li>c² = AH² + (a − CH)² = (b・sin C)² + (a − b・cos C)² = <b>b²sin²C + a² − 2a(b・cos C) + b²cos²C</b></li>
+<li>b²sin²C + b²cos²C = b²(sin²C + cos²C) = b²（三角関数の相互関係）であることを使って整理すると、<b>c² = a² + b² − 2ab・cos C</b>。∠Cが鈍角でcos Cが負になっても、符号がそのまま計算に反映されるので式はそのまま成り立つ。</li>
 </ol>
 </div>
 <script>
