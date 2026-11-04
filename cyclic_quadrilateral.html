@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>円に内接する四角形の対角の和</title>
+<style>
+:root{--bg:#fff;--card:#f4f3ee;--tx:#1f1f1e;--tx2:#5f5e5a;--tx3:#888780;--ln:#b4b2a9;--ln2:#d3d1c7}
+@media(prefers-color-scheme:dark){:root{--bg:#1f1f1e;--card:#2c2c2a;--tx:#f1efe8;--tx2:#b4b2a9;--tx3:#888780;--ln:#5f5e5a;--ln2:#444441}}
+body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:460px;margin:0 auto}
+h1{font-size:18px;font-weight:500;margin:0 0 4px}
+h2{font-size:14px;font-weight:500;color:var(--tx2);margin:20px 0 8px}
+p{font-size:13px;line-height:1.7;color:var(--tx2);margin:6px 0}
+.formula{font-size:16px;text-align:center;background:var(--card);border-radius:8px;padding:12px;margin:10px 0}
+.ctl{display:flex;gap:16px;margin:10px 0 12px;font-size:13px;color:var(--tx2)}
+.ctl label{display:flex;align-items:center;gap:5px;cursor:pointer}
+svg{display:block;width:100%}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.m{background:var(--card);border-radius:8px;padding:8px 12px}
+.m .l{font-size:12px;color:var(--tx2)}
+.m .v{font-size:17px;font-weight:500}
+.sub{display:flex;justify-content:space-between;font-size:12px;color:var(--tx2);background:var(--card);border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.sub span.v{color:var(--tx);font-weight:500}
+.s{font-size:12px;fill:var(--tx2)}
+ol{font-size:13px;line-height:1.8;color:var(--tx2);padding-left:20px;margin:8px 0}
+ol li{margin-bottom:6px}
+ol b{color:var(--tx);font-weight:500}
+.hl{color:var(--tx);font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>円に内接する四角形の対角の和</h1>
+<p>円周上に4つの頂点を持つ四角形（円に内接する四角形）では、向かい合う角（対角）の和が常に180°になる。</p>
+<div class="formula">∠A + ∠C = 180°　　∠B + ∠D = 180°</div>
+
+<p>4つの頂点 <b class="hl">A・B・C・D</b> はすべてドラッグできます。円周上の順番を保ったまま自由に動かして、対角の和が常に180°になることを確認してください。</p>
+
+<div class="ctl">
+<label><input type="radio" name="pair" value="ac" checked>∠Aと∠Cを確認</label>
+<label><input type="radio" name="pair" value="bd">∠Bと∠Dを確認</label>
+</div>
+
+<svg id="fig" viewBox="0 0 380 320">
+<circle cx="190" cy="140" r="100" fill="none" stroke="var(--tx3)" stroke-width="1"/>
+<circle cx="190" cy="140" r="2.5" fill="var(--tx3)"/>
+<text x="178" y="156" class="s">O</text>
+
+<path id="arc1" fill="none" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+<path id="arc2" fill="none" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+
+<polygon id="quad" fill="none" stroke="var(--tx)" stroke-width="1.5"/>
+
+<circle id="ptA" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="ptB" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="ptC" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="ptD" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="hitAll" cx="190" cy="140" r="130" fill="transparent" style="cursor:grab;touch-action:none"/>
+<text id="labA" class="s" style="font-weight:600;fill:var(--tx)">A</text>
+<text id="labB" class="s" style="font-weight:600;fill:var(--tx)">B</text>
+<text id="labC" class="s" style="font-weight:600;fill:var(--tx)">C</text>
+<text id="labD" class="s" style="font-weight:600;fill:var(--tx)">D</text>
+</svg>
+
+<div class="grid">
+<div class="m"><div class="l">∠A + ∠C</div><div class="v" id="sumAC">-</div></div>
+<div class="m"><div class="l">∠B + ∠D</div><div class="v" id="sumBD">-</div></div>
+</div>
+<div class="sub"><span>∠A=<span class="v" id="dA">-</span>° / ∠B=<span class="v" id="dB">-</span>° / ∠C=<span class="v" id="dC">-</span>° / ∠D=<span class="v" id="dD">-</span>°</span></div>
+
+<h2>証明（円周角の定理を用いる）</h2>
+<ol id="proofAC">
+<li>四角形ABCDの4頂点はすべて同じ円周上にある。</li>
+<li>頂点<b>A</b>の内角 ∠A は、Aを除く弧（<span class="hl" style="color:#D85A30">弧BCD</span>、BからC・Dを通ってDに至る弧）に対する円周角である。</li>
+<li>頂点<b>C</b>の内角 ∠C は、Cを除く弧（<span class="hl" style="color:#378ADD">弧DAB</span>、DからA・Bを通ってBに至る弧）に対する円周角である。</li>
+<li>弧BCDと弧DABを合わせるとちょうど円周全体になるので、2つの弧の中心角の和は360°。</li>
+<li>円周角はその弧に対する中心角の半分なので、<b>∠A + ∠C = 360° ÷ 2 = 180°</b>。</li>
+<li>同じ議論を頂点B・Dについて行えば、<b>∠B + ∠D = 180°</b> も示せる。</li>
+</ol>
+<ol id="proofBD" style="display:none">
+<li>四角形ABCDの4頂点はすべて同じ円周上にある。</li>
+<li>頂点<b>B</b>の内角 ∠B は、Bを除く弧（<span class="hl" style="color:#D85A30">弧CDA</span>、CからDを通ってAに至る弧）に対する円周角である。</li>
+<li>頂点<b>D</b>の内角 ∠D は、Dを除く弧（<span class="hl" style="color:#378ADD">弧ABC</span>、AからBを通ってCに至る弧）に対する円周角である。</li>
+<li>弧CDAと弧ABCを合わせるとちょうど円周全体になるので、2つの弧の中心角の和は360°。</li>
+<li>円周角はその弧に対する中心角の半分なので、<b>∠B + ∠D = 360° ÷ 2 = 180°</b>。</li>
+<li>同じ議論を頂点A・Cについて行えば、<b>∠A + ∠C = 180°</b> も示せる。</li>
+</ol>
+</div>
+<script>
+var cx=190,cy=140,R=100;
+var verts={A:100,B:190,C:260,D:350};
+var order=['A','B','C','D'];
+var colorAC='#D85A30',colorBD='#378ADD';
+var $=function(i){return document.getElementById(i)};
+
+function P(t){var a=t*Math.PI/180;return{x:cx+R*Math.cos(a),y:cy-R*Math.sin(a)};}
+function angleAt(p,q,r){
+  var v1x=q.x-p.x,v1y=q.y-p.y,v2x=r.x-p.x,v2y=r.y-p.y;
+  var dot=v1x*v2x+v1y*v2y,cross=v1x*v2y-v1y*v2x;
+  return Math.atan2(Math.abs(cross),dot);
+}
+function LP(t,extra){
+  var a=t*Math.PI/180,ux=Math.cos(a),uy=-Math.sin(a),d=R+(extra||16);
+  return{x:cx+d*ux,y:cy+d*uy,anchor:ux>=0?'start':(ux<-0.15?'end':'middle')};
+}
+function fmtd(v){return v.toFixed(1);}
+function ccwDiff(t1,t2){return((t2-t1)%360+360)%360;}
+function circDist(a,b){var x=Math.abs(a-b)%360;return Math.min(x,360-x);}
+function clampToArc(theta,from,to,margin){
+  var total=ccwDiff(from,to),lo=margin,hi=Math.max(lo,total-margin);
+  var d=ccwDiff(from,theta);
+  if(d>=lo&&d<=hi)return theta;
+  var dClamped=circDist(d,lo)<=circDist(d,hi)?lo:hi;
+  return((from+dClamped)%360+360)%360;
+}
+function arcPath(t1,t2,r){
+  var p1=P(t1),p2=P(t2),diff=ccwDiff(t1,t2),large=diff>180?1:0;
+  return 'M'+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' A'+r+' '+r+' 0 '+large+' 0 '+p2.x.toFixed(1)+' '+p2.y.toFixed(1);
+}
+
+function render(){
+  var pts={};
+  order.forEach(function(k){pts[k]=P(verts[k]);});
+
+  $('quad').setAttribute('points',order.map(function(k){return pts[k].x.toFixed(1)+','+pts[k].y.toFixed(1);}).join(' '));
+
+  order.forEach(function(k){
+    $('pt'+k).setAttribute('cx',pts[k].x);$('pt'+k).setAttribute('cy',pts[k].y);
+    var l=LP(verts[k]);
+    $('lab'+k).setAttribute('x',l.x);$('lab'+k).setAttribute('y',l.y);$('lab'+k).setAttribute('text-anchor',l.anchor);
+  });
+
+  var angA=angleAt(pts.A,pts.D,pts.B)*180/Math.PI;
+  var angB=angleAt(pts.B,pts.A,pts.C)*180/Math.PI;
+  var angC=angleAt(pts.C,pts.B,pts.D)*180/Math.PI;
+  var angD=angleAt(pts.D,pts.C,pts.A)*180/Math.PI;
+
+  $('dA').textContent=fmtd(angA);$('dB').textContent=fmtd(angB);
+  $('dC').textContent=fmtd(angC);$('dD').textContent=fmtd(angD);
+  $('sumAC').textContent=fmtd(angA+angC)+'°';
+  $('sumBD').textContent=fmtd(angB+angD)+'°';
+
+  var mode=document.querySelector('input[name=pair]:checked').value;
+  if(mode==='ac'){
+    $('arc1').setAttribute('d',arcPath(verts.B,verts.D,100));
+    $('arc1').setAttribute('stroke',colorAC);
+    $('arc2').setAttribute('d',arcPath(verts.D,verts.B,100));
+    $('arc2').setAttribute('stroke',colorBD);
+    $('proofAC').style.display='';$('proofBD').style.display='none';
+  }else{
+    $('arc1').setAttribute('d',arcPath(verts.C,verts.A,100));
+    $('arc1').setAttribute('stroke',colorAC);
+    $('arc2').setAttribute('d',arcPath(verts.A,verts.C,100));
+    $('arc2').setAttribute('stroke',colorBD);
+    $('proofAC').style.display='none';$('proofBD').style.display='';
+  }
+}
+
+var adj={A:['D','B'],B:['A','C'],C:['B','D'],D:['C','A']};
+var activeKey=null;
+var hitAll=$('hitAll');
+function svgCoord(e){
+  var r=$('fig').getBoundingClientRect(),k=380/r.width;
+  return{x:(e.clientX-r.left)*k,y:(e.clientY-r.top)*k};
+}
+function nearestVertex(x,y){
+  var best=null,bestDist=Infinity;
+  order.forEach(function(k){
+    var p=P(verts[k]),dist=Math.hypot(p.x-x,p.y-y);
+    if(dist<bestDist){bestDist=dist;best=k;}
+  });
+  return{key:best,dist:bestDist};
+}
+function moveActive(c){
+  var x=c.x-cx,y=cy-c.y;
+  var d=Math.atan2(y,x)*180/Math.PI;if(d<0)d+=360;
+  var pn=adj[activeKey];
+  verts[activeKey]=clampToArc(d,verts[pn[0]],verts[pn[1]],14);
+  render();
+}
+hitAll.addEventListener('pointerdown',function(e){
+  var c=svgCoord(e),n=nearestVertex(c.x,c.y);
+  if(n.dist>40)return;
+  activeKey=n.key;
+  hitAll.setPointerCapture(e.pointerId);
+  moveActive(c);
+});
+hitAll.addEventListener('pointermove',function(e){if(activeKey)moveActive(svgCoord(e));});
+hitAll.addEventListener('pointerup',function(){activeKey=null;});
+document.querySelectorAll('input[name=pair]').forEach(function(r){r.addEventListener('change',render);});
+
+render();
+</script>
+</body>
+</html>

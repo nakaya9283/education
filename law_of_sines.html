@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>正弦定理の証明</title>
+<style>
+:root{--bg:#fff;--card:#f4f3ee;--tx:#1f1f1e;--tx2:#5f5e5a;--tx3:#888780;--ln:#b4b2a9;--ln2:#d3d1c7}
+@media(prefers-color-scheme:dark){:root{--bg:#1f1f1e;--card:#2c2c2a;--tx:#f1efe8;--tx2:#b4b2a9;--tx3:#888780;--ln:#5f5e5a;--ln2:#444441}}
+body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:460px;margin:0 auto}
+h1{font-size:18px;font-weight:500;margin:0 0 4px}
+h2{font-size:14px;font-weight:500;color:var(--tx2);margin:20px 0 8px}
+p{font-size:13px;line-height:1.7;color:var(--tx2);margin:6px 0}
+.formula{font-size:16px;text-align:center;background:var(--card);border-radius:8px;padding:12px;margin:10px 0}
+.ctl{display:flex;align-items:center;gap:12px;margin:10px 0 8px}
+button{min-width:84px;padding:8px 12px;border:.5px solid var(--ln);border-radius:8px;background:transparent;color:var(--tx);font-size:14px;cursor:pointer}
+input[type=range]{flex:1}
+label.chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tx2);margin:4px 0 12px}
+svg{display:block;width:100%}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.m{background:var(--card);border-radius:8px;padding:8px 12px}
+.m .l{font-size:12px;color:var(--tx2)}
+.m .v{font-size:17px;font-weight:500}
+.sub{display:flex;justify-content:space-between;font-size:12px;color:var(--tx2);background:var(--card);border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.sub span.v{color:var(--tx);font-weight:500}
+.s{font-size:12px;fill:var(--tx2)}
+ol{font-size:13px;line-height:1.8;color:var(--tx2);padding-left:20px;margin:8px 0}
+ol li{margin-bottom:6px}
+ol b{color:var(--tx);font-weight:500}
+.hl{color:var(--tx);font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>正弦定理の証明</h1>
+<p>三角形の辺とその対角の正弦（sin）の比は、外接円の直径に等しい。</p>
+<div class="formula">a / sin A = b / sin B = c / sin C = 2R</div>
+
+<p>点 <b class="hl">A</b> をドラッグ（またはスライダーで操作）すると、鋭角三角形・鈍角三角形のどちらでも a/sinA が外接円の直径 2R と常に一致することを確認できます。点B・Cは固定です。</p>
+
+<div class="ctl">
+<button id="play">▶ A を自動回転</button>
+<input type="range" id="angA" min="0" max="360" step="1" value="80" aria-label="頂点Aの位置">
+</div>
+<label class="chk"><input type="checkbox" id="proof" checked>証明用の補助図（直径 BB'）を表示</label>
+
+<svg id="fig" viewBox="0 0 380 320">
+<circle cx="190" cy="140" r="100" fill="none" stroke="var(--tx3)" stroke-width="1"/>
+<circle cx="190" cy="140" r="2.5" fill="var(--tx3)"/>
+<text x="178" y="156" class="s">O</text>
+
+<!-- proof overlay -->
+<g id="proofGroup">
+<line id="diam" x1="0" y1="0" x2="0" y2="0" stroke="#9B59B6" stroke-width="1" stroke-dasharray="4 3"/>
+<line id="bpc" x1="0" y1="0" x2="0" y2="0" stroke="#9B59B6" stroke-width="1.5" stroke-dasharray="4 3"/>
+<path id="rightmark" fill="none" stroke="#9B59B6" stroke-width="1.5"/>
+<circle id="bpPt" cx="0" cy="0" r="4" fill="#9B59B6"/>
+<text id="bpLab" class="s" style="fill:#9B59B6">B'</text>
+</g>
+
+<!-- main triangle -->
+<line id="sideA" x1="0" y1="0" x2="0" y2="0" stroke="#D85A30" stroke-width="2.5"/>
+<line id="sideB" x1="0" y1="0" x2="0" y2="0" stroke="#378ADD" stroke-width="2"/>
+<line id="sideC" x1="0" y1="0" x2="0" y2="0" stroke="#3FA796" stroke-width="2"/>
+
+<text id="labA" class="s" style="font-weight:600;fill:var(--tx)">A</text>
+<text id="labB" class="s" style="fill:var(--tx)">B</text>
+<text id="labC" class="s" style="fill:var(--tx)">C</text>
+<text id="labSideA" class="s" style="fill:#D85A30">a</text>
+<text id="labSideB" class="s" style="fill:#378ADD">b</text>
+<text id="labSideC" class="s" style="fill:#3FA796">c</text>
+
+<circle id="ptA" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="ptB" cx="0" cy="0" r="4" fill="var(--tx2)"/>
+<circle id="ptC" cx="0" cy="0" r="4" fill="var(--tx2)"/>
+<circle id="hitA" cx="0" cy="0" r="20" fill="transparent" style="cursor:grab;touch-action:none"/>
+</svg>
+
+<div class="grid">
+<div class="m"><div class="l" style="color:#D85A30">a / sin A</div><div class="v" id="ra">-</div></div>
+<div class="m"><div class="l" style="color:#378ADD">b / sin B</div><div class="v" id="rb">-</div></div>
+<div class="m"><div class="l" style="color:#3FA796">c / sin C</div><div class="v" id="rc">-</div></div>
+<div class="m"><div class="l">2R（外接円の直径）</div><div class="v" id="r2">-</div></div>
+</div>
+<div class="sub"><span>∠A=<span class="v" id="dA">-</span>° / ∠B=<span class="v" id="dB">-</span>° / ∠C=<span class="v" id="dC">-</span>°（合計 <span class="v" id="dSum">-</span>°）</span></div>
+<div class="sub"><span>∠BCB'（直径に対する円周角）=<span class="v" id="d90">-</span>° ／ ∠BB'C=<span class="v" id="dBp">-</span>°</span></div>
+
+<h2>証明（外接円を用いる方法）</h2>
+<ol>
+<li>三角形ABCの外接円の中心をO、半径をRとする。</li>
+<li>頂点<b>B</b>を通る直径を引き、円周上の反対側の端点を<b>B'</b>とする（BB' = 2R）。</li>
+<li>B'Cは直径BB'を見込む円周角なので、<b>∠BCB' = 90°</b>（直径に対する円周角は常に直角）。図で確認すると現在 <span class="hl" id="chk90">-</span>° になっている。</li>
+<li>弧BCに対する円周角の定理より、点Aが点B'と弧BCの同じ側にあるとき ∠BB'C = ∠A。反対側にあるとき（四角形ABCB'が円に内接するため）∠BB'C = 180° − ∠A。どちらの場合も <b>sin(∠BB'C) = sin A</b>（点Aをドラッグして両方のケースを試せます）。</li>
+<li>直角三角形BCB'において、sin(∠BB'C) = BC / BB' = a / 2R。</li>
+<li>4と5より <b>sin A = a / 2R</b>、すなわち <b>a / sin A = 2R</b>。</li>
+<li>同様に頂点A、頂点Cを通る直径を考えれば b/sinB = 2R、c/sinC = 2R も示せる（対称性より）。</li>
+<li>以上より a/sinA = b/sinB = c/sinC = 2R（正弦定理）。∠A = 90°の場合は a がそのまま直径2Rとなり自明に成立する。</li>
+</ol>
+</div>
+<script>
+var cx=190,cy=140,R=100;
+var thetaB=210,thetaC=330,thetaA=80;
+var playing=false,last=0,SPEED=0.015;
+var $=function(i){return document.getElementById(i)};
+
+function P(t){var a=t*Math.PI/180;return{x:cx+R*Math.cos(a),y:cy-R*Math.sin(a)};}
+function dist(p,q){return Math.hypot(q.x-p.x,q.y-p.y);}
+function angleAt(p,q,r){
+  var v1x=q.x-p.x,v1y=q.y-p.y,v2x=r.x-p.x,v2y=r.y-p.y;
+  var dot=v1x*v2x+v1y*v2y,cross=v1x*v2y-v1y*v2x;
+  return Math.atan2(Math.abs(cross),dot);
+}
+function clampA(t){
+  return((t%360)+360)%360;
+}
+function LP(t,extra){
+  var a=t*Math.PI/180,ux=Math.cos(a),uy=-Math.sin(a),d=R+(extra||16);
+  return{x:cx+d*ux,y:cy+d*uy,anchor:ux>=0?'start':(ux<-0.15?'end':'middle')};
+}
+function mid(p,q){return{x:(p.x+q.x)/2,y:(p.y+q.y)/2};}
+function fmt(v){return v.toFixed(2);}
+function fmtd(v){return v.toFixed(1);}
+
+function render(){
+  var A=P(thetaA),B=P(thetaB),C=P(thetaC),Bp=P(thetaB+180);
+  $('sideA').setAttribute('x1',B.x);$('sideA').setAttribute('y1',B.y);$('sideA').setAttribute('x2',C.x);$('sideA').setAttribute('y2',C.y);
+  $('sideB').setAttribute('x1',A.x);$('sideB').setAttribute('y1',A.y);$('sideB').setAttribute('x2',C.x);$('sideB').setAttribute('y2',C.y);
+  $('sideC').setAttribute('x1',A.x);$('sideC').setAttribute('y1',A.y);$('sideC').setAttribute('x2',B.x);$('sideC').setAttribute('y2',B.y);
+  $('ptA').setAttribute('cx',A.x);$('ptA').setAttribute('cy',A.y);
+  $('ptB').setAttribute('cx',B.x);$('ptB').setAttribute('cy',B.y);
+  $('ptC').setAttribute('cx',C.x);$('ptC').setAttribute('cy',C.y);
+  $('hitA').setAttribute('cx',A.x);$('hitA').setAttribute('cy',A.y);
+
+  var la=LP(thetaA),lb=LP(thetaB),lc=LP(thetaC);
+  $('labA').setAttribute('x',la.x);$('labA').setAttribute('y',la.y);$('labA').setAttribute('text-anchor',la.anchor);
+  $('labB').setAttribute('x',lb.x);$('labB').setAttribute('y',lb.y);$('labB').setAttribute('text-anchor',lb.anchor);
+  $('labC').setAttribute('x',lc.x);$('labC').setAttribute('y',lc.y);$('labC').setAttribute('text-anchor',lc.anchor);
+
+  var ctr={x:(A.x+B.x+C.x)/3,y:(A.y+B.y+C.y)/3};
+  [['labSideA',B,C],['labSideB',A,C],['labSideC',A,B]].forEach(function(e){
+    var m=mid(e[1],e[2]),dx=m.x-ctr.x,dy=m.y-ctr.y,n=Math.hypot(dx,dy)||1;
+    $(e[0]).setAttribute('x',m.x+dx/n*12);$(e[0]).setAttribute('y',m.y+dy/n*12+4);
+    $(e[0]).setAttribute('text-anchor','middle');
+  });
+
+  var a=dist(B,C),b=dist(A,C),c=dist(A,B);
+  var angA=angleAt(A,B,C),angB=angleAt(B,A,C),angC=angleAt(C,A,B);
+  var sinA=Math.sin(angA),sinB=Math.sin(angB),sinC=Math.sin(angC);
+  var twoR=2*R;
+
+  $('ra').textContent=sinA<0.02?'—':fmt(a/sinA);
+  $('rb').textContent=sinB<0.02?'—':fmt(b/sinB);
+  $('rc').textContent=sinC<0.02?'—':fmt(c/sinC);
+  $('r2').textContent=fmt(twoR);
+  $('dA').textContent=fmtd(angA*180/Math.PI);
+  $('dB').textContent=fmtd(angB*180/Math.PI);
+  $('dC').textContent=fmtd(angC*180/Math.PI);
+  $('dSum').textContent=fmtd((angA+angB+angC)*180/Math.PI);
+
+  var ang90=angleAt(C,B,Bp)*180/Math.PI;
+  var angBp=angleAt(Bp,B,C)*180/Math.PI;
+  $('d90').textContent=fmtd(ang90);
+  $('chk90').textContent=fmtd(ang90);
+  $('dBp').textContent=fmtd(angBp);
+
+  var showProof=$('proof').checked;
+  $('proofGroup').style.display=showProof?'':'none';
+  if(showProof){
+    $('diam').setAttribute('x1',B.x);$('diam').setAttribute('y1',B.y);$('diam').setAttribute('x2',Bp.x);$('diam').setAttribute('y2',Bp.y);
+    $('bpc').setAttribute('x1',Bp.x);$('bpc').setAttribute('y1',Bp.y);$('bpc').setAttribute('x2',C.x);$('bpc').setAttribute('y2',C.y);
+    $('bpPt').setAttribute('cx',Bp.x);$('bpPt').setAttribute('cy',Bp.y);
+    var lbp=LP(thetaB+180);
+    $('bpLab').setAttribute('x',lbp.x);$('bpLab').setAttribute('y',lbp.y);$('bpLab').setAttribute('text-anchor',lbp.anchor);
+
+    var d1x=B.x-C.x,d1y=B.y-C.y,n1=Math.hypot(d1x,d1y)||1;
+    var d2x=Bp.x-C.x,d2y=Bp.y-C.y,n2=Math.hypot(d2x,d2y)||1;
+    d1x/=n1;d1y/=n1;d2x/=n2;d2y/=n2;
+    var s=12;
+    var p1={x:C.x+d1x*s,y:C.y+d1y*s};
+    var p2={x:p1.x+d2x*s,y:p1.y+d2y*s};
+    var p3={x:C.x+d2x*s,y:C.y+d2y*s};
+    $('rightmark').setAttribute('d','M'+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' L'+p2.x.toFixed(1)+' '+p2.y.toFixed(1)+' L'+p3.x.toFixed(1)+' '+p3.y.toFixed(1));
+  }
+  $('angA').value=Math.round(thetaA);
+}
+
+function tick(ts){
+  if(!playing)return;
+  if(last){thetaA=clampA(thetaA+(ts-last)*SPEED*360/1000*12);}
+  last=ts;render();requestAnimationFrame(tick);
+}
+$('play').addEventListener('click',function(){
+  playing=!playing;last=0;
+  $('play').textContent=playing?'■ 停止':'▶ A を自動回転';
+  if(playing)requestAnimationFrame(tick);
+});
+$('angA').addEventListener('input',function(e){
+  playing=false;$('play').textContent='▶ A を自動回転';
+  thetaA=clampA(+e.target.value);render();
+});
+$('proof').addEventListener('change',render);
+
+var dragging=false;
+function fromPointer(e){
+  var r=$('fig').getBoundingClientRect(),k=380/r.width;
+  var x=(e.clientX-r.left)*k-cx,y=cy-(e.clientY-r.top)*k;
+  var d=Math.atan2(y,x)*180/Math.PI;if(d<0)d+=360;
+  thetaA=clampA(d);render();
+}
+$('hitA').addEventListener('pointerdown',function(e){dragging=true;playing=false;$('play').textContent='▶ A を自動回転';$('hitA').setPointerCapture(e.pointerId);fromPointer(e);});
+$('hitA').addEventListener('pointermove',function(e){if(dragging)fromPointer(e);});
+$('hitA').addEventListener('pointerup',function(){dragging=false;});
+
+render();
+</script>
+</body>
+</html>
