@@ -17,7 +17,7 @@ p{font-size:13px;line-height:1.7;color:var(--tx2);margin:6px 0}
 button{min-width:84px;padding:8px 12px;border:.5px solid var(--ln);border-radius:8px;background:transparent;color:var(--tx);font-size:14px;cursor:pointer}
 input[type=range]{flex:1}
 label.chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tx2);margin:4px 0 12px}
-svg{display:block;width:100%}
+svg{display:block;width:100%;touch-action:none}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
 .m{background:var(--card);border-radius:8px;padding:8px 12px}
 .m .l{font-size:12px;color:var(--tx2)}
@@ -208,8 +208,8 @@ function fromPointer(e){
   var d=Math.atan2(y,x)*180/Math.PI;if(d<0)d+=360;
   thetaA=clampA(d);render();
 }
-$('hitA').addEventListener('pointerdown',function(e){e.preventDefault();dragging=true;playing=false;$('play').textContent='▶ A を自動回転';$('hitA').setPointerCapture(e.pointerId);fromPointer(e);});
-$('hitA').addEventListener('pointermove',function(e){if(dragging){e.preventDefault();fromPointer(e);}});
+$('hitA').addEventListener('pointerdown',function(e){e.preventDefault();dragging=true;playing=false;$('play').textContent='▶ A を自動回転';$('hitA').setPointerCapture(e.pointerId);fromPointer(e);},{passive:false});
+$('hitA').addEventListener('pointermove',function(e){if(dragging){e.preventDefault();fromPointer(e);}},{passive:false});
 $('hitA').addEventListener('pointerup',function(){dragging=false;});
 
 render();

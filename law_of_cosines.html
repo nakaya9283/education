@@ -13,7 +13,7 @@ h1{font-size:18px;font-weight:500;margin:0 0 4px}
 h2{font-size:14px;font-weight:500;color:var(--tx2);margin:20px 0 8px}
 p{font-size:13px;line-height:1.7;color:var(--tx2);margin:6px 0}
 .formula{font-size:16px;text-align:center;background:var(--card);border-radius:8px;padding:12px;margin:10px 0}
-svg{display:block;width:100%}
+svg{display:block;width:100%;touch-action:none}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
 .m{background:var(--card);border-radius:8px;padding:8px 12px}
 .m .l{font-size:12px;color:var(--tx2)}
@@ -147,8 +147,8 @@ function fromPointer(e){
   A.x=px;A.y=py;
   render();
 }
-$('hitA').addEventListener('pointerdown',function(e){e.preventDefault();dragging=true;$('hitA').setPointerCapture(e.pointerId);fromPointer(e);});
-$('hitA').addEventListener('pointermove',function(e){if(dragging){e.preventDefault();fromPointer(e);}});
+$('hitA').addEventListener('pointerdown',function(e){e.preventDefault();dragging=true;$('hitA').setPointerCapture(e.pointerId);fromPointer(e);},{passive:false});
+$('hitA').addEventListener('pointermove',function(e){if(dragging){e.preventDefault();fromPointer(e);}},{passive:false});
 $('hitA').addEventListener('pointerup',function(){dragging=false;});
 
 render();
