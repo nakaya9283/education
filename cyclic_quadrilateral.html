@@ -182,11 +182,12 @@ function moveActive(c){
 hitAll.addEventListener('pointerdown',function(e){
   var c=svgCoord(e),n=nearestVertex(c.x,c.y);
   if(n.dist>40)return;
+  e.preventDefault();
   activeKey=n.key;
   hitAll.setPointerCapture(e.pointerId);
   moveActive(c);
 });
-hitAll.addEventListener('pointermove',function(e){if(activeKey)moveActive(svgCoord(e));});
+hitAll.addEventListener('pointermove',function(e){if(activeKey){e.preventDefault();moveActive(svgCoord(e));}});
 hitAll.addEventListener('pointerup',function(){activeKey=null;});
 document.querySelectorAll('input[name=pair]').forEach(function(r){r.addEventListener('change',render);});
 

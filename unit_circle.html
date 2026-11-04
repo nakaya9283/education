@@ -157,8 +157,8 @@ var r=$('circ').getBoundingClientRect(),k=380/r.width;
 var x=(e.clientX-r.left)*k-cx,y=cy-(e.clientY-r.top)*k;
 var d=Math.atan2(y,x)*180/Math.PI;if(d<0)d+=360;deg=d;render();
 }
-$('hit').addEventListener('pointerdown',function(e){dragging=true;playing=false;$('play').textContent='▶ 再生';$('hit').setPointerCapture(e.pointerId);fromPointer(e);});
-$('hit').addEventListener('pointermove',function(e){if(dragging)fromPointer(e);});
+$('hit').addEventListener('pointerdown',function(e){e.preventDefault();dragging=true;playing=false;$('play').textContent='▶ 再生';$('hit').setPointerCapture(e.pointerId);fromPointer(e);});
+$('hit').addEventListener('pointermove',function(e){if(dragging){e.preventDefault();fromPointer(e);}});
 $('hit').addEventListener('pointerup',function(){dragging=false;});
 render();
 </script>

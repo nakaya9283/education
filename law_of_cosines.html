@@ -147,8 +147,8 @@ function fromPointer(e){
   A.x=px;A.y=py;
   render();
 }
-$('hitA').addEventListener('pointerdown',function(e){dragging=true;$('hitA').setPointerCapture(e.pointerId);fromPointer(e);});
-$('hitA').addEventListener('pointermove',function(e){if(dragging)fromPointer(e);});
+$('hitA').addEventListener('pointerdown',function(e){e.preventDefault();dragging=true;$('hitA').setPointerCapture(e.pointerId);fromPointer(e);});
+$('hitA').addEventListener('pointermove',function(e){if(dragging){e.preventDefault();fromPointer(e);}});
 $('hitA').addEventListener('pointerup',function(){dragging=false;});
 
 render();
