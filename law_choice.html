@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>正弦定理と余弦定理の使い分け</title>
+<style>
+:root{--bg:#fff;--card:#f4f3ee;--tx:#1f1f1e;--tx2:#5f5e5a;--tx3:#888780;--ln:#b4b2a9;--ln2:#d3d1c7}
+@media(prefers-color-scheme:dark){:root{--bg:#1f1f1e;--card:#2c2c2a;--tx:#f1efe8;--tx2:#b4b2a9;--tx3:#888780;--ln:#5f5e5a;--ln2:#444441}}
+body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:460px;margin:0 auto}
+h1{font-size:18px;font-weight:500;margin:0 0 4px}
+h2{font-size:15px;font-weight:500;color:var(--tx);margin:28px 0 4px;border-top:1px solid var(--ln2);padding-top:20px}
+h2:first-of-type{border-top:none;padding-top:0}
+p{font-size:13px;line-height:1.7;color:var(--tx2);margin:6px 0}
+.formula{font-size:15px;text-align:center;background:var(--card);border-radius:8px;padding:10px;margin:8px 0}
+svg{display:block;width:100%;touch-action:none}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.m{background:var(--card);border-radius:8px;padding:8px 12px}
+.m .l{font-size:12px;color:var(--tx2)}
+.m .v{font-size:16px;font-weight:500}
+.sub{display:flex;justify-content:space-between;font-size:12px;color:var(--tx2);background:var(--card);border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.sub span.v{color:var(--tx);font-weight:500}
+.s{font-size:12px;fill:var(--tx2)}
+.hl{color:var(--tx);font-weight:500}
+.summary{background:var(--card);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.8;color:var(--tx2);margin-top:8px}
+.summary b{color:var(--tx)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>正弦定理と余弦定理の使い分け</h1>
+<p>「角とその向かいの辺」のペアが使えるなら正弦定理、辺に挟まれた角や3辺しかわからないなら余弦定理。2つの図で実際に確かめます。</p>
+
+<h2>正弦定理：角度がメインの情報のとき</h2>
+<p>「角」を手がかりに考える定理です。角と、その向かい側にある辺はワンセットで動きます（角が大きければ、向かいの辺も長い）。∠A・∠Bの大きさがわかっているとき、向かい側の辺a・bを正弦定理で求められます。頂点<b class="hl">C</b>をドラッグしてみてください。</p>
+<div class="formula">a / sin A = b / sin B</div>
+
+<svg id="fig1" viewBox="0 0 380 260">
+<line x1="20" y1="220" x2="360" y2="220" stroke="var(--ln)" stroke-width=".5"/>
+<line id="lineB1" x1="0" y1="0" x2="0" y2="0" stroke="#378ADD" stroke-width="2.5"/>
+<line id="lineA1" x1="0" y1="0" x2="0" y2="0" stroke="#D85A30" stroke-width="2.5"/>
+<line id="lineC1" x1="0" y1="0" x2="0" y2="0" stroke="var(--tx3)" stroke-width="2"/>
+<path id="arcAng1" fill="none" stroke="#D85A30" stroke-width="1.2"/>
+<path id="arcAng2" fill="none" stroke="#378ADD" stroke-width="1.2"/>
+<text id="labAngA" class="s" style="fill:#D85A30">A</text>
+<text id="labAngB" class="s" style="fill:#378ADD">B</text>
+<text id="labSideA1" class="s" style="fill:#D85A30">a</text>
+<text id="labSideB1" class="s" style="fill:#378ADD">b</text>
+<circle id="ptC1" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="ptA1" cx="0" cy="0" r="4" fill="var(--tx2)"/>
+<circle id="ptB1" cx="0" cy="0" r="4" fill="var(--tx2)"/>
+<circle id="hitC1" cx="0" cy="0" r="22" fill="transparent" style="cursor:grab;touch-action:none"/>
+<text id="labC1" class="s" style="font-weight:600;fill:var(--tx)">C</text>
+<text id="labA1" class="s" style="fill:var(--tx)">A</text>
+<text id="labB1" class="s" style="fill:var(--tx)">B</text>
+</svg>
+
+<div class="grid">
+<div class="m"><div class="l" style="color:#D85A30">∠A / 辺a（∠Aの向かい）</div><div class="v" id="angAinfo">-</div></div>
+<div class="m"><div class="l" style="color:#378ADD">∠B / 辺b（∠Bの向かい）</div><div class="v" id="angBinfo">-</div></div>
+</div>
+<div class="sub"><span>a ÷ sin A = <span class="v" id="ratioA">-</span> ／ b ÷ sin B = <span class="v" id="ratioB">-</span>（常に一致）</span></div>
+
+<h2>余弦定理：辺の長さがメインの情報のとき</h2>
+<p>三角形を実際に組み立てるときの計算、というイメージです。2辺（a・b）の長さと、その間の角∠Cを指定すれば、三角形はただ1つに決まります（中学の合同条件「2辺とその間の角」と同じ状況）。その状態から残りの辺cを余弦定理で求められます。頂点<b class="hl">A</b>・<b class="hl">B</b>をドラッグしてみてください。</p>
+<div class="formula">c² = a² + b² − 2ab・cos C</div>
+
+<svg id="fig2" viewBox="0 0 380 280">
+<line id="lineB2" x1="0" y1="0" x2="0" y2="0" stroke="#378ADD" stroke-width="2.5"/>
+<line id="lineA2" x1="0" y1="0" x2="0" y2="0" stroke="#D85A30" stroke-width="2.5"/>
+<line id="lineC2" x1="0" y1="0" x2="0" y2="0" stroke="var(--tx3)" stroke-width="2" stroke-dasharray="5 4"/>
+<path id="arcAngC2" fill="none" stroke="var(--tx3)" stroke-width="1.2"/>
+<text id="labAngC2" class="s">∠C</text>
+<text id="labSideA2" class="s" style="fill:#D85A30">a</text>
+<text id="labSideB2" class="s" style="fill:#378ADD">b</text>
+<text id="labSideC2" class="s" style="fill:var(--tx2)">c</text>
+<circle id="ptC2" cx="0" cy="0" r="5" fill="var(--tx2)"/>
+<circle id="ptA2" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="ptB2" cx="0" cy="0" r="6" fill="var(--tx)"/>
+<circle id="hitAll2" cx="190" cy="140" r="150" fill="transparent" style="cursor:grab;touch-action:none"/>
+<text id="labC2" class="s" style="fill:var(--tx)">C</text>
+<text id="labA2" class="s" style="font-weight:600;fill:var(--tx)">A</text>
+<text id="labB2" class="s" style="font-weight:600;fill:var(--tx)">B</text>
+</svg>
+
+<div class="grid">
+<div class="m"><div class="l">c（実測）</div><div class="v" id="cMeasured">-</div></div>
+<div class="m"><div class="l">c（余弦定理で計算）</div><div class="v" id="cCalc">-</div></div>
+</div>
+<div class="sub"><span>a=<span class="v" id="aLen">-</span> / b=<span class="v" id="bLen">-</span> / ∠C=<span class="v" id="angCDeg">-</span>°</span></div>
+<p>逆に、もし<b class="hl">3辺</b>a・b・cすべてがわかっていれば、同じ式を cos C = (a² + b² − c²) ÷ 2ab の形に変形して角Cを求められます。これは正弦定理ではできません。</p>
+
+<h2>まとめ</h2>
+<div class="summary">
+正弦定理は「<b>角とその向かいの辺</b>」のペアが手がかり。角度が先にわかっているときに向いています。<br>
+余弦定理は「<b>辺に挟まれた角</b>」または「<b>3辺すべて</b>」が手がかり。辺の長さが先にわかっているときに向いています。<br>
+どちらの図でも、ドラッグ中ずっと両辺の値が一致し続けることを確認できます。
+</div>
+</div>
+<script>
+var $=function(i){return document.getElementById(i)};
+function dist(p,q){return Math.hypot(q.x-p.x,q.y-p.y);}
+function fmt(v){return v.toFixed(1);}
+function fmtd(v){return v.toFixed(1);}
+function angleAt(p,q,r){
+  var v1x=q.x-p.x,v1y=q.y-p.y,v2x=r.x-p.x,v2y=r.y-p.y;
+  var dot=v1x*v2x+v1y*v2y,cross=v1x*v2y-v1y*v2x;
+  return Math.atan2(Math.abs(cross),dot);
+}
+function arcPath(center,fromPt,toward,r){
+  var a1=Math.atan2(fromPt.y-center.y,fromPt.x-center.x);
+  var a2=Math.atan2(toward.y-center.y,toward.x-center.x);
+  var p1={x:center.x+r*Math.cos(a1),y:center.y+r*Math.sin(a1)};
+  var p2={x:center.x+r*Math.cos(a2),y:center.y+r*Math.sin(a2)};
+  var diff=a2-a1;
+  while(diff>Math.PI)diff-=2*Math.PI;
+  while(diff<-Math.PI)diff+=2*Math.PI;
+  var sweep=diff>0?1:0;
+  return 'M'+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' A'+r+' '+r+' 0 0 '+sweep+' '+p2.x.toFixed(1)+' '+p2.y.toFixed(1);
+}
+
+/* ---------- 図1: 正弦定理（角∠A・∠Bとその向かいの辺a・b） ---------- */
+var A1={x:50,y:220},B1={x:210,y:220};
+var C1={x:120,y:80};
+
+function render1(){
+  var angA=angleAt(A1,B1,C1),angB=angleAt(B1,A1,C1);
+  var a=dist(B1,C1),b=dist(A1,C1);
+
+  $('lineA1').setAttribute('x1',B1.x);$('lineA1').setAttribute('y1',B1.y);$('lineA1').setAttribute('x2',C1.x);$('lineA1').setAttribute('y2',C1.y);
+  $('lineB1').setAttribute('x1',A1.x);$('lineB1').setAttribute('y1',A1.y);$('lineB1').setAttribute('x2',C1.x);$('lineB1').setAttribute('y2',C1.y);
+  $('lineC1').setAttribute('x1',A1.x);$('lineC1').setAttribute('y1',A1.y);$('lineC1').setAttribute('x2',B1.x);$('lineC1').setAttribute('y2',B1.y);
+
+  $('arcAng1').setAttribute('d',arcPath(A1,{x:A1.x+30,y:A1.y},C1,26));
+  $('arcAng2').setAttribute('d',arcPath(B1,C1,{x:B1.x-30,y:B1.y},26));
+  $('labAngA').setAttribute('x',A1.x+30);$('labAngA').setAttribute('y',A1.y-10);
+  $('labAngB').setAttribute('x',B1.x-38);$('labAngB').setAttribute('y',B1.y-10);
+
+  var mA=[(B1.x+C1.x)/2,(B1.y+C1.y)/2];
+  $('labSideA1').setAttribute('x',mA[0]+10);$('labSideA1').setAttribute('y',mA[1]);
+  var mB=[(A1.x+C1.x)/2,(A1.y+C1.y)/2];
+  $('labSideB1').setAttribute('x',mB[0]-14);$('labSideB1').setAttribute('y',mB[1]);
+
+  $('ptC1').setAttribute('cx',C1.x);$('ptC1').setAttribute('cy',C1.y);
+  $('hitC1').setAttribute('cx',C1.x);$('hitC1').setAttribute('cy',C1.y);
+  $('ptA1').setAttribute('cx',A1.x);$('ptA1').setAttribute('cy',A1.y);
+  $('ptB1').setAttribute('cx',B1.x);$('ptB1').setAttribute('cy',B1.y);
+  $('labC1').setAttribute('x',C1.x);$('labC1').setAttribute('y',C1.y-12);$('labC1').setAttribute('text-anchor','middle');
+  $('labA1').setAttribute('x',A1.x-14);$('labA1').setAttribute('y',A1.y+16);
+  $('labB1').setAttribute('x',B1.x+6);$('labB1').setAttribute('y',B1.y+16);
+
+  $('angAinfo').textContent='∠A='+fmtd(angA*180/Math.PI)+'° / a='+fmt(a);
+  $('angBinfo').textContent='∠B='+fmtd(angB*180/Math.PI)+'° / b='+fmt(b);
+  $('ratioA').textContent=fmt(a/Math.sin(angA));
+  $('ratioB').textContent=fmt(b/Math.sin(angB));
+}
+
+var dragging1=false;
+function fromPointer1(e){
+  var r=$('fig1').getBoundingClientRect(),k=380/r.width;
+  var x=(e.clientX-r.left)*k,y=(e.clientY-r.top)*k;
+  C1.x=x;C1.y=Math.min(y,214);
+  render1();
+}
+$('hitC1').addEventListener('pointerdown',function(e){e.preventDefault();dragging1=true;$('hitC1').setPointerCapture(e.pointerId);fromPointer1(e);},{passive:false});
+$('hitC1').addEventListener('pointermove',function(e){if(dragging1){e.preventDefault();fromPointer1(e);}},{passive:false});
+$('hitC1').addEventListener('pointerup',function(){dragging1=false;});
+
+/* ---------- 図2: 余弦定理（2辺a・bとその間の角∠C） ---------- */
+var C2={x:110,y:220};
+var A2={x:190,y:260};
+var B2={x:270,y:100};
+
+function render2(){
+  var a=dist(C2,B2),b=dist(C2,A2);
+  var angC=angleAt(C2,A2,B2);
+  var cMeasured=dist(A2,B2);
+  var cCalc=Math.sqrt(a*a+b*b-2*a*b*Math.cos(angC));
+
+  $('lineA2').setAttribute('x1',C2.x);$('lineA2').setAttribute('y1',C2.y);$('lineA2').setAttribute('x2',B2.x);$('lineA2').setAttribute('y2',B2.y);
+  $('lineB2').setAttribute('x1',C2.x);$('lineB2').setAttribute('y1',C2.y);$('lineB2').setAttribute('x2',A2.x);$('lineB2').setAttribute('y2',A2.y);
+  $('lineC2').setAttribute('x1',A2.x);$('lineC2').setAttribute('y1',A2.y);$('lineC2').setAttribute('x2',B2.x);$('lineC2').setAttribute('y2',B2.y);
+
+  $('arcAngC2').setAttribute('d',arcPath(C2,A2,B2,28));
+  $('labAngC2').setAttribute('x',C2.x+34);$('labAngC2').setAttribute('y',C2.y-20);
+
+  var mA=[(C2.x+B2.x)/2,(C2.y+B2.y)/2];
+  $('labSideA2').setAttribute('x',mA[0]+10);$('labSideA2').setAttribute('y',mA[1]);
+  var mB=[(C2.x+A2.x)/2,(C2.y+A2.y)/2];
+  $('labSideB2').setAttribute('x',mB[0]-14);$('labSideB2').setAttribute('y',mB[1]);
+  var mC=[(A2.x+B2.x)/2,(A2.y+B2.y)/2];
+  $('labSideC2').setAttribute('x',mC[0]+10);$('labSideC2').setAttribute('y',mC[1]);
+
+  $('ptC2').setAttribute('cx',C2.x);$('ptC2').setAttribute('cy',C2.y);
+  $('ptA2').setAttribute('cx',A2.x);$('ptA2').setAttribute('cy',A2.y);
+  $('ptB2').setAttribute('cx',B2.x);$('ptB2').setAttribute('cy',B2.y);
+  $('labC2').setAttribute('x',C2.x-16);$('labC2').setAttribute('y',C2.y+6);
+  $('labA2').setAttribute('x',A2.x+6);$('labA2').setAttribute('y',A2.y+16);
+  $('labB2').setAttribute('x',B2.x+8);$('labB2').setAttribute('y',B2.y-8);
+
+  $('cMeasured').textContent=fmt(cMeasured);
+  $('cCalc').textContent=fmt(cCalc);
+  $('aLen').textContent=fmt(a);
+  $('bLen').textContent=fmt(b);
+  $('angCDeg').textContent=fmtd(angC*180/Math.PI);
+}
+
+var activeKey2=null;
+function svgCoord2(e){
+  var r=$('fig2').getBoundingClientRect(),k=380/r.width;
+  return{x:(e.clientX-r.left)*k,y:(e.clientY-r.top)*k};
+}
+function nearestOf2(x,y){
+  var dA=Math.hypot(A2.x-x,A2.y-y),dB=Math.hypot(B2.x-x,B2.y-y);
+  return dA<dB?{key:'A',dist:dA}:{key:'B',dist:dB};
+}
+var hitAll2=$('hitAll2');
+hitAll2.addEventListener('pointerdown',function(e){
+  var c=svgCoord2(e),n=nearestOf2(c.x,c.y);
+  if(n.dist>40)return;
+  e.preventDefault();
+  activeKey2=n.key;
+  hitAll2.setPointerCapture(e.pointerId);
+  if(activeKey2==='A'){A2.x=c.x;A2.y=c.y;}else{B2.x=c.x;B2.y=c.y;}
+  render2();
+},{passive:false});
+hitAll2.addEventListener('pointermove',function(e){
+  if(!activeKey2)return;
+  e.preventDefault();
+  var c=svgCoord2(e);
+  if(activeKey2==='A'){A2.x=c.x;A2.y=c.y;}else{B2.x=c.x;B2.y=c.y;}
+  render2();
+},{passive:false});
+hitAll2.addEventListener('pointerup',function(){activeKey2=null;});
+
+render1();
+render2();
+</script>
+</body>
+</html>
